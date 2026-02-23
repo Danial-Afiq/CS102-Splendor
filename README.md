@@ -160,8 +160,8 @@ Your code should read this and default to 15 if missing/invalid.
 We use **original (non-copyrighted) custom card/noble data** stored as CSV under:
 
 ```
-src/data/cards.csv
-src/data/nobles.csv
+src/splendor/data/cards.csv
+src/splendor/data/nobles.csv
 ```
 
 Recommended CSV schema:
