@@ -189,10 +189,10 @@ We prioritize **usability over aesthetics**:
 2. make a small change
 3. `./compile.sh && ./run.sh` to sanity check
 4. `git add .`
-5. `git commit -m "feat: <what you did>"`
+5. `git commit -m "<what you did>"`
 6. `git push origin <your-branch>`
-7. open PR if it should go into `main`
+7. open a Pull Request (PR) if it should go into `main` (i.e., merge to `main` branch once feature is complete & stable) 
 
 ---
 
-If anything breaks (compile/run, merge conflicts, folder structure), drop a message in the group chat and paste the exact terminal output.
+If anything breaks (compile/run, merge conflicts, folder structure), drop a message in the group chat :)
