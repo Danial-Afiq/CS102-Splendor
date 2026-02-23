@@ -43,26 +43,45 @@ Run:
 
 ## 1) Git rules (IMPORTANT)
 
-### ✅ Always work on your own branch
-**Never work directly on `main`.**  
-Create a branch named after yourself (e.g., `Danial`, `Alice`, `Bob`).
+### ✅ Never work directly on `main`
+Always work on your own branch and submit a Pull Request (PR) when you want your changes merged.
 
-Check current branch:
+### ✅ Branch naming convention (recommended)
+Use a **hybrid** format so it’s clear **who owns the branch** and **what it’s for**:
+
+```
+<your-name>/<feature>
+```
+
+Examples:
+- `danial/setup-scripts`
+- `danial/card-loader`
+- `alice/console-ui`
+- `bob/game-engine-moves`
+
+> Avoid name-only branches like `Danial` once you start multiple features — they get messy fast.
+
+---
+
+### Check your current branch
 ```bash
 git branch
 ```
 
-Create a new branch (first time only):
+### Create a new branch (first time for a feature)
 ```bash
-git switch -c <your-branch-name>
+git switch -c <your-name>/<feature>
 # example:
-git switch -c Danial
+git switch -c danial/card-loader
 ```
 
-Switch to your branch (if it already exists):
+### Switch to your branch (if it already exists)
 ```bash
-git switch <your-branch-name>
+git switch <your-name>/<feature>
+# example:
+git switch danial/card-loader
 ```
+
 
 ### ✅ Keep your branch up to date with `main`
 Do this regularly before you start working (or before pushing a big change):
