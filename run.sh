@@ -1,6 +1,3 @@
-if [ ! -d "out" ]; then
-  echo "out/ not found. Compiling first"
-  ./compile.sh
-fi
-
-java -cp out splendor.app.Main
+cd "$(dirname "$0")"
+./compile.sh
+java -cp classes splendor.app.Main

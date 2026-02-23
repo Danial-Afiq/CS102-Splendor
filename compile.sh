@@ -1,8 +1,4 @@
-rm -rf out
-mkdir -p out
-
-javac -d out \
-  splendor/entities/*.java \
-  splendor/app/Main.java
-
-echo "Compiled to ./out"
+cd "$(dirname "$0")"
+rm -rf classes
+mkdir classes
+javac -d classes $(find src -name "*.java")
