@@ -13,6 +13,10 @@ import splendor.entities.CardDeck;
 import splendor.entities.GemColor;
 import splendor.entities.Tier;
 
+/**
+ * Loads card data from a CSV file, converts each row into a Card object,
+ * places cards into their respective tiers, and returns one CardDeck per tier.
+ */
 public class CardLoader {
 
     public static Map<Tier, CardDeck> loadDecks(String filePath) throws IOException {
