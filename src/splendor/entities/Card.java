@@ -33,7 +33,7 @@ public class Card {
 
     @Override
     public String toString() {
-        return String.format("Card{Tier=%d, Points=%d, Bonus=%s, Cost=%s}", 
+        return String.format("Card{Tier=%s, Points=%s, Bonus=%s, Cost=%s}", 
                                 tier, points, bonus, cost);
     }
 }
