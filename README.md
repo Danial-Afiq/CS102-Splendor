@@ -9,8 +9,8 @@ Before coding anything, please read this README fully — it explains the folder
 
 ### Clone
 ```bash
-git clone <REPO_URL>
-cd <REPO_FOLDER>
+git clone "https://github.com/Danial-Afiq/CS102-Splendor.git"
+cd "CS102-Splendor"
 ```
 
 ### Compile + Run (required by assignment)
