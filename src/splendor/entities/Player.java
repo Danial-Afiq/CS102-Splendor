@@ -5,11 +5,11 @@ import java.util.EnumMap;
 import java.util.List;
 
 public class Player {
-    private String name;
-    private EnumMap<GemColor, Integer> gems;
-    private List<Card> purchasedCards;
-    private List<Card> reservedCards;
-    private List<Noble> nobles;
+    private final String name;
+    private final EnumMap<GemColor, Integer> gems;
+    private final List<Card> purchasedCards;
+    private final List<Card> reservedCards;
+    private final List<Noble> nobles;
 
     public Player(String name) {
         this.name = name;

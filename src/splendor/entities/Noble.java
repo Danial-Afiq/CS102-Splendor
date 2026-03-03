@@ -3,9 +3,9 @@ package splendor.entities;
 import java.util.EnumMap;
 
 public class Noble {
-    private String id;
-    private int points;
-    private EnumMap<GemColor, Integer> requirements;
+    private final String id;
+    private final int points;
+    private final EnumMap<GemColor, Integer> requirements;
     public Noble(String id, int points, EnumMap<GemColor, Integer> requirements) {
         this.id = id;
         this.points = points;

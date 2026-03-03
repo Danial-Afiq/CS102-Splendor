@@ -3,7 +3,7 @@ package splendor.entities;
 import java.util.EnumMap;
 
 public class GemBank {
-    private EnumMap<GemColor, Integer> gems;
+    private final EnumMap<GemColor, Integer> gems;
     public GemBank(int numPlayers) {
         this.gems = new EnumMap<>(GemColor.class);
 

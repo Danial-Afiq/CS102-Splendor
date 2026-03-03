@@ -3,10 +3,10 @@ package splendor.entities;
 import java.util.EnumMap;
 
 public class Card {
-    private Tier tier;
-    private int points;
-    private GemColor bonus;
-    private EnumMap<GemColor, Integer> cost;
+    private final Tier tier;
+    private final int points;
+    private final GemColor bonus;
+    private final EnumMap<GemColor, Integer> cost;
 
     public Card(Tier tier, int points, GemColor bonus, EnumMap<GemColor, Integer> cost) {
         this.tier = tier;
