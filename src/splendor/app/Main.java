@@ -1,55 +1,64 @@
 package splendor.app;
+
 import java.io.IOException;
-import java.util.EnumMap;
-import java.util.Map;
-import splendor.data.CardLoader;
-import splendor.entities.*;
+import java.util.Arrays;
+import java.util.List;
+import splendor.entities.GemColor;
+import splendor.entities.Tier;
+import splendor.logic.GameEngine;
+import splendor.logic.GameSetup;
+import splendor.logic.GameState;
 
 public class Main {
     public static void main(String[] args) {
-        //creates player object
-        Player p1 = new Player("Danial");
-        System.out.println(p1);
-        System.out.println();
-
-        //create one noble
-        EnumMap<GemColor, Integer> req = new EnumMap<>(GemColor.class);
-        req.put(GemColor.RUBY, 3);
-        req.put(GemColor.EMERALD, 3);
-        req.put(GemColor.ONYX, 3);
-        Noble n1 = new Noble("N1", 3, req);
-        System.out.println(n1);
-        System.out.println();
-
-        //create the gem bank
-        GemBank gemBank = new GemBank(3);
-        System.out.println(gemBank);
-        System.out.println();
-
-
-        //create CardDeck (shuffled)
         try {
-            Map<Tier, CardDeck> decks = CardLoader.loadDecks("src/splendor/data/cards.csv");
+            List<String> playerNames = Arrays.asList("Alice", "Bob", "Charlie");
+            GameState gameState = GameSetup.createGame(
+                    playerNames,
+                    "src/splendor/data/cards.csv",
+                    "src/splendor/data/nobles.csv",
+                    "config.properties");
+            GameEngine engine = new GameEngine(gameState);
 
-            CardDeck tierOneDeck = decks.get(Tier.ONE);
-            CardDeck tierTwoDeck = decks.get(Tier.TWO);
-            CardDeck tierThreeDeck = decks.get(Tier.THREE);
+            System.out.println("=== Initial Game State ===");
+            printState(gameState);
 
-            System.out.println(tierOneDeck);
-            System.out.println(tierTwoDeck);
-            System.out.println(tierThreeDeck);
+            System.out.println("=== Turn 1: " + engine.getCurrentPlayer().getName() + " ===");
+            System.out.println("Take 3 different gems: " +
+                    engine.takeThreeDifferentGems(GemColor.DIAMOND, GemColor.SAPPHIRE, GemColor.EMERALD));
+            printState(gameState);
+            engine.nextTurn();
 
-            // optional: shuffle decks
-            tierOneDeck.shuffle();
-            tierTwoDeck.shuffle();
-            tierThreeDeck.shuffle();
+            System.out.println("=== Turn 2: " + engine.getCurrentPlayer().getName() + " ===");
+            System.out.println("Take 2 ruby gems: " + engine.takeTwoSameGems(GemColor.RUBY));
+            printState(gameState);
+            engine.nextTurn();
 
-            System.out.println("Top Tier 1 card: " + tierOneDeck.drawCard());
-            System.out.println("Top Tier 2 card: " + tierTwoDeck.drawCard());
-            System.out.println("Top Tier 3 card: " + tierThreeDeck.drawCard());
-            System.out.println();
+            System.out.println("=== Turn 3: " + engine.getCurrentPlayer().getName() + " ===");
+            System.out.println("Reserve first tier 1 card: " + engine.reserveVisibleCard(Tier.ONE, 0));
+            printState(gameState);
+            engine.nextTurn();
+
+            System.out.println("=== Turn 4: " + engine.getCurrentPlayer().getName() + " ===");
+            System.out.println("Buy first tier 1 card if possible: " + engine.buyVisibleCard(Tier.ONE, 0));
+            printState(gameState);
+            System.out.println("Game over: " + engine.isGameOver());
         } catch (IOException e) {
-            System.out.println("Error reading cards.csv: " + e.getMessage());
+            System.out.println("Error setting up game: " + e.getMessage());
         }
+    }
+
+    private static void printState(GameState gameState) {
+        System.out.println("Current player: " + gameState.getCurrentPlayer().getName());
+        System.out.println("Gem bank: " + gameState.getGemBank());
+        System.out.println("Nobles in play: " + gameState.getNoblesInPlay());
+        System.out.println("Visible tier 1 cards: " + gameState.getVisibleCards(Tier.ONE));
+        System.out.println("Visible tier 2 cards: " + gameState.getVisibleCards(Tier.TWO));
+        System.out.println("Visible tier 3 cards: " + gameState.getVisibleCards(Tier.THREE));
+        System.out.println("Players:");
+        for (int i = 0; i < gameState.getPlayers().size(); i++) {
+            System.out.println("  " + (i + 1) + ". " + gameState.getPlayers().get(i));
+        }
+        System.out.println();
     }
 }
