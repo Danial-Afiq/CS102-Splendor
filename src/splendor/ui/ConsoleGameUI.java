@@ -2,8 +2,11 @@ package splendor.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
+
 import splendor.entities.Card;
 import splendor.entities.GemColor;
 import splendor.entities.Noble;
@@ -12,6 +15,8 @@ import splendor.entities.Tier;
 import splendor.logic.GameEngine;
 import splendor.logic.GameSetup;
 import splendor.logic.GameState;
+import splendor.entities.AIPlayer;
+import splendor.logic.ai.AIAction;
 
 public class ConsoleGameUI {
     private static final int ACTION_TAKE_THREE_DIFFERENT = 1;
@@ -70,14 +75,87 @@ public class ConsoleGameUI {
             playerNames.add(name);
         }
 
+        Set<String> aiPlayerNames = new HashSet<>();
+        for (String name : playerNames) {
+            System.out.print("Is \"" + name + "\" a human player? (y/n): ");
+            String answer = scanner.nextLine().trim().toLowerCase();
+            if (!answer.isEmpty() && !answer.startsWith("y")) {
+                aiPlayerNames.add(name);
+                System.out.println("  → " + name + " will be controlled by the AI.");
+            }
+        }
+
         return GameSetup.createGame(
                 playerNames,
+                aiPlayerNames,
                 "src/splendor/data/cards.csv",
                 "src/splendor/data/nobles.csv",
                 "config.properties");
     }
+    void runTurn(GameEngine engine) {
+        renderer.printGameState(engine.getGameState());
 
-    private void runTurn(GameEngine engine) {
+        Player current = engine.getCurrentPlayer();
+
+        if (AIPlayer.isAI(current)) {
+            handleAITurn(engine, (AIPlayer) current);
+        } else {
+            handleHumanTurn(engine);
+        }
+    }
+
+    private void handleAITurn(GameEngine engine, AIPlayer ai) {
+        renderer.clearScreen();
+        renderer.printGameState(engine.getGameState());
+
+        GameState state = engine.getGameState();
+        AIAction action = ai.chooseAction(state);
+
+        System.out.println("\n[AI] " + ai.getName() + " decides: " + action);
+
+        boolean success = switch (action.type()) {
+            case TAKE_GEMS -> {
+                List<GemColor> gems = action.gems();
+                if (gems.size() == 2 && gems.get(0) == gems.get(1)) {
+                    yield engine.takeTwoSameGems(gems.get(0));
+                } else {
+                    GemColor first  = gems.size() > 0 ? gems.get(0) : null;
+                    GemColor second = gems.size() > 1 ? gems.get(1) : null;
+                    GemColor third  = gems.size() > 2 ? gems.get(2) : null;
+                    yield engine.takeThreeDifferentGems(first, second, third);
+                }
+            }
+            case BUY_CARD -> {
+                if (action.buyingReserved()) {
+                    yield engine.buyReservedCard(action.reservedIndex());
+                } else {
+                    yield engine.buyVisibleCard(action.tier(), action.slotIndex());
+                }
+            }
+            case RESERVE_CARD -> {
+                if (action.slotIndex() == -1) {
+                    yield engine.reserveTopCard(action.tier());
+                } else {
+                    yield engine.reserveVisibleCard(action.tier(), action.slotIndex());
+                }
+            }
+        };
+
+        if (success) {
+            lastSuccessMessage = "[AI] " + ai.getName() + " completed: " + action;
+            renderer.printSuccess(lastSuccessMessage);
+            pauseForEnter();
+            if (!engine.isGameOver()) {
+                engine.nextTurn(); 
+            }
+        } else {
+            renderer.printError("[AI] Action failed — skipping turn.");
+            pauseForEnter();
+            engine.nextTurn();
+        }
+}
+
+    private void handleHumanTurn(GameEngine engine) {
         boolean turnFinished = false;
 
         while (!turnFinished && !engine.isGameOver() && !quitRequested) {

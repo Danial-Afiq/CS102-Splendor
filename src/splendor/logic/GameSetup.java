@@ -8,28 +8,37 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+
 import splendor.data.CardLoader;
 import splendor.data.NobleLoader;
+import splendor.entities.AIPlayer;
 import splendor.entities.Card;
 import splendor.entities.CardDeck;
 import splendor.entities.GemBank;
 import splendor.entities.Noble;
 import splendor.entities.Player;
 import splendor.entities.Tier;
+import splendor.logic.ai.AIStrategy;
+import splendor.logic.ai.RuleBasedStrategy;
 
 public class GameSetup {
     private static final int DEFAULT_WIN_POINTS = 15;
 
-    public static GameState createGame(List<String> playerNames, String cardFilePath,
-            String nobleFilePath, String configFilePath) throws IOException {
-        if (playerNames == null || playerNames.size() < 2 || playerNames.size() > 4) {
-            throw new IllegalArgumentException("Number of players must be between 2 and 4.");
-        }
+    public static GameState createGame(List<String> playerNames, Set<String> aiPlayerNames,
+        String cardFilePath, String nobleFilePath, String configFilePath) throws IOException {
 
         List<Player> players = new ArrayList<Player>();
+        AIStrategy aiStrategy = new RuleBasedStrategy();
+
         for (String name : playerNames) {
-            players.add(new Player(name));
+            if (aiPlayerNames.contains(name)) {
+                players.add(new AIPlayer(name, aiStrategy));
+            } else {
+                players.add(new Player(name));
+            }
         }
+        
 
         GemBank gemBank = new GemBank(playerNames.size());
         Map<Tier, CardDeck> decks = CardLoader.loadDecks(cardFilePath);
