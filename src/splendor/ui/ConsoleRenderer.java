@@ -135,12 +135,7 @@ public class ConsoleRenderer {
 
     public void printFinalResults(GameState gameState) {
         printBanner("GAME OVER");
-        int bestScore = -1;
-        for (Player player : gameState.getPlayers()) {
-            if (player.getPoints() > bestScore) {
-                bestScore = player.getPoints();
-            }
-        }
+        List<Player> winners = gameState.getWinningPlayers();
 
         System.out.println(sectionTitle("Final Scores"));
         for (Player player : gameState.getPlayers()) {
@@ -149,7 +144,7 @@ public class ConsoleRenderer {
                     + " cards=" + player.getPurchasedCards().size()
                     + " reserved=" + player.getReservedCards().size()
                     + " nobles=" + player.getNobles().size();
-            if (player.getPoints() == bestScore) {
+            if (winners.contains(player)) {
                 System.out.println(Ansi.success("  " + line + "  <- winner"));
             } else {
                 System.out.println("  " + line);
