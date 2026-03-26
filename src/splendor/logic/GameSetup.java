@@ -24,9 +24,15 @@ import splendor.logic.ai.RuleBasedStrategy;
 
 public class GameSetup {
     private static final int DEFAULT_WIN_POINTS = 15;
+    private static final String DEFAULT_CARD_FILE_PATH = "src/splendor/data/cards.csv";
+    private static final String DEFAULT_NOBLE_FILE_PATH = "src/splendor/data/nobles.csv";
 
     public static GameState createGame(List<String> playerNames, Set<String> aiPlayerNames,
-        String cardFilePath, String nobleFilePath, String configFilePath) throws IOException {
+            String configFilePath) throws IOException {
+        Properties properties = loadProperties(configFilePath);
+        String cardFilePath = getFilePath(properties, "cards.filepath", DEFAULT_CARD_FILE_PATH);
+        String nobleFilePath = getFilePath(properties, "nobles.filepath", DEFAULT_NOBLE_FILE_PATH);
+        int winPoints = getWinPoints(properties);
 
         List<Player> players = new ArrayList<Player>();
         AIStrategy aiStrategy = new RuleBasedStrategy();
@@ -64,23 +70,35 @@ public class GameSetup {
             visibleCards.put(tier, row);
         }
 
-        int winPoints = loadWinPoints(configFilePath);
         return new GameState(players, gemBank, decks, visibleCards, noblesInPlay, winPoints);
     }
 
-    private static int loadWinPoints(String configFilePath) {
+    private static Properties loadProperties(String configFilePath) {
         Properties properties = new Properties();
-        try {
-            FileInputStream inputStream = new FileInputStream(configFilePath);
+        try (FileInputStream inputStream = new FileInputStream(configFilePath)) {
             properties.load(inputStream);
-            inputStream.close();
-            String value = properties.getProperty("win.points");
-            if (value == null) {
-                return DEFAULT_WIN_POINTS;
-            }
-            return Integer.parseInt(value.trim());
         } catch (IOException e) {
+            return properties;
+        }
+        return properties;
+    }
+
+    private static String getFilePath(Properties properties, String key, String defaultValue) {
+        String value = properties.getProperty(key);
+        if (value == null || value.trim().isEmpty()) {
+            return defaultValue;
+        }
+        return value.trim();
+    }
+
+    private static int getWinPoints(Properties properties) {
+        String value = properties.getProperty("win.points");
+        if (value == null || value.trim().isEmpty()) {
             return DEFAULT_WIN_POINTS;
+        }
+
+        try {
+            return Integer.parseInt(value.trim());
         } catch (NumberFormatException e) {
             return DEFAULT_WIN_POINTS;
         }
