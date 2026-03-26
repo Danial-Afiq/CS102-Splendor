@@ -105,11 +105,6 @@ public class MediumStrategy implements AIStrategy {
             return null;
         }
 
-        int goldToTake = state.getGemBank().hasAtLeast(GemColor.GOLD, 1) ? 1 : 0;
-        if (self.getTotalGems() + goldToTake > 10) {
-            return null;
-        }
-
         Card best = null;
         Tier bestTier = null;
         int bestSlot = -1;
@@ -152,7 +147,7 @@ public class MediumStrategy implements AIStrategy {
                 .map(Map.Entry::getKey)
                 .findFirst();
 
-        if (doubleGem.isPresent() && self.getTotalGems() + 2 <= 10) {
+        if (doubleGem.isPresent()) {
             return AIAction.takeGems(List.of(doubleGem.get(), doubleGem.get()));
         }
 
@@ -174,7 +169,7 @@ public class MediumStrategy implements AIStrategy {
                     .forEach(toTake::add);
         }
 
-        if (toTake.size() >= 3 && self.getTotalGems() + 3 <= 10) {
+        if (toTake.size() >= 3) {
             return AIAction.takeGems(toTake.subList(0, 3));
         }
 
@@ -188,15 +183,13 @@ public class MediumStrategy implements AIStrategy {
                 .limit(3)
                 .collect(Collectors.toList());
 
-        if (available.size() >= 3 && self.getTotalGems() + 3 <= 10) {
+        if (available.size() >= 3) {
             return AIAction.takeGems(available.subList(0, 3));
         }
 
-        if (self.getTotalGems() + 2 <= 10) {
-            for (GemColor color : GemColor.values()) {
-                if (color != GemColor.GOLD && bank.getGemCount(color) >= 4) {
-                    return AIAction.takeGems(List.of(color, color));
-                }
+        for (GemColor color : GemColor.values()) {
+            if (color != GemColor.GOLD && bank.getGemCount(color) >= 4) {
+                return AIAction.takeGems(List.of(color, color));
             }
         }
 

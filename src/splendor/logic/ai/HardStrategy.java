@@ -16,15 +16,21 @@ import splendor.logic.GameState;
  *  - Optimises noble acquisition as a primary goal.
  */
 public class HardStrategy implements AIStrategy {
-    private final MediumStrategy fallbackStrategy = new MediumStrategy();
-
     @Override
     public AIAction selectAction(GameState state, Player self) {
-        return fallbackStrategy.selectAction(state, self);
+        // TODO: implement hard AI logic
+        throw new UnsupportedOperationException("HardStrategy not yet implemented");
     }
 
     @Override
     public GemColor chooseGemToDiscard(GameState state, Player self) {
-        return fallbackStrategy.chooseGemToDiscard(state, self);
+        // TODO: implement hard AI discard logic
+        List<GemColor> held = new ArrayList<>();
+        for (GemColor color : GemColor.values()) {
+            if (self.getGemCount(color) > 0) {
+                held.add(color);
+            }
+        }
+        return held.get(new Random().nextInt(held.size()));
     }
 }

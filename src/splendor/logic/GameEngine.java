@@ -45,16 +45,12 @@ public class GameEngine {
             return false;
         }
 
-        Player player = getCurrentPlayer();
-        if (player.getTotalGems() + 3 > 10) {
-            return false;
-        }
-
         GemBank bank = gameState.getGemBank();
         if (!bank.hasAtLeast(first, 1) || !bank.hasAtLeast(second, 1) || !bank.hasAtLeast(third, 1)) {
             return false;
         }
 
+        Player player = getCurrentPlayer();
         bank.takeGem(first);
         bank.takeGem(second);
         bank.takeGem(third);
@@ -72,16 +68,12 @@ public class GameEngine {
             return false;
         }
 
-        Player player = getCurrentPlayer();
-        if (player.getTotalGems() + 2 > 10) {
-            return false;
-        }
-
         GemBank bank = gameState.getGemBank();
         if (!bank.hasAtLeast(color, 4)) {
             return false;
         }
 
+        Player player = getCurrentPlayer();
         bank.takeGem(color);
         bank.takeGem(color);
         player.addGem(color, 2);
@@ -124,9 +116,6 @@ public class GameEngine {
         }
 
         int goldToTake = gameState.getGemBank().hasAtLeast(GemColor.GOLD, 1) ? 1 : 0;
-        if (player.getTotalGems() + goldToTake > 10) {
-            return false;
-        }
 
         Card card = gameState.removeVisibleCard(tier, slotIndex);
         player.addReservedCard(card);
@@ -151,9 +140,6 @@ public class GameEngine {
         }
 
         int goldToTake = gameState.getGemBank().hasAtLeast(GemColor.GOLD, 1) ? 1 : 0;
-        if (player.getTotalGems() + goldToTake > 10) {
-            return false;
-        }
 
         Card card = gameState.getDeck(tier).drawCard();
         if (card == null) {

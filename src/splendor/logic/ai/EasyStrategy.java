@@ -67,15 +67,13 @@ public class EasyStrategy implements AIStrategy {
             }
         }
 
-        if (toTake.size() >= 3 && self.getTotalGems() + 3 <= 10) {
+        if (toTake.size() >= 3) {
             return AIAction.takeGems(toTake.subList(0, 3));
         }
 
-        if (self.getTotalGems() + 2 <= 10) {
-            for (GemColor color : GemColor.values()) {
-                if (color != GemColor.GOLD && bank.getGemCount(color) >= 4) {
-                    return AIAction.takeGems(List.of(color, color));
-                }
+        for (GemColor color : GemColor.values()) {
+            if (color != GemColor.GOLD && bank.getGemCount(color) >= 4) {
+                return AIAction.takeGems(List.of(color, color));
             }
         }
 
