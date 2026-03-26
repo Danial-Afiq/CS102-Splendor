@@ -89,6 +89,34 @@ public class GameState {
         return gameOver;
     }
 
+    public List<Player> getWinningPlayers() {
+        List<Player> winners = new ArrayList<Player>();
+        int bestPoints = -1;
+        int fewestPurchasedCards = Integer.MAX_VALUE;
+
+        for (Player player : players) {
+            int points = player.getPoints();
+            int purchasedCards = player.getPurchasedCards().size();
+
+            if (points > bestPoints) {
+                bestPoints = points;
+                fewestPurchasedCards = purchasedCards;
+                winners.clear();
+                winners.add(player);
+            } else if (points == bestPoints) {
+                if (purchasedCards < fewestPurchasedCards) {
+                    fewestPurchasedCards = purchasedCards;
+                    winners.clear();
+                    winners.add(player);
+                } else if (purchasedCards == fewestPurchasedCards) {
+                    winners.add(player);
+                }
+            }
+        }
+
+        return winners;
+    }
+
     public void refillVisibleCard(Tier tier, int slotIndex) {
         CardDeck deck = decks.get(tier);
         if (deck == null || deck.isEmpty()) {
