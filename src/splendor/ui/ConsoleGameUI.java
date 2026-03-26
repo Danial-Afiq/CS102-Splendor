@@ -93,8 +93,6 @@ public class ConsoleGameUI {
                 "config.properties");
     }
     void runTurn(GameEngine engine) {
-        renderer.printGameState(engine.getGameState());
-
         Player current = engine.getCurrentPlayer();
 
         if (AIPlayer.isAI(current)) {
