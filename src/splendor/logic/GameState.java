@@ -21,7 +21,6 @@ public class GameState {
     private final int winPoints;
     private int currentPlayerIndex;
     private boolean finalRoundStarted;
-    private int finalRoundStarterIndex;
     private boolean gameOver;
 
     public GameState(List<Player> players, GemBank gemBank, Map<Tier, CardDeck> decks,
@@ -43,7 +42,6 @@ public class GameState {
         this.winPoints = winPoints;
         this.currentPlayerIndex = 0;
         this.finalRoundStarted = false;
-        this.finalRoundStarterIndex = -1;
         this.gameOver = false;
     }
 
@@ -106,7 +104,6 @@ public class GameState {
     public void startFinalRound() {
         if (!finalRoundStarted) {
             finalRoundStarted = true;
-            finalRoundStarterIndex = currentPlayerIndex;
         }
     }
 
@@ -115,10 +112,12 @@ public class GameState {
             return;
         }
 
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-        if (finalRoundStarted && currentPlayerIndex == finalRoundStarterIndex) {
+        if (finalRoundStarted && currentPlayerIndex == players.size() - 1) {
             gameOver = true;
+            return;
         }
+
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     }
 
     @Override
