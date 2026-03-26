@@ -169,14 +169,6 @@ public class RuleBasedStrategy implements AIStrategy {
                     .limit(3 - toTake.size())
                     .forEach(toTake::add);
         }
-        shortage.entrySet().stream()
-                .filter(e -> e.getKey() != GemColor.GOLD
-                        && e.getValue() > 0
-                        && bank.getGemCount(e.getKey()) > 0)
-                .sorted(Map.Entry.<GemColor, Integer>comparingByValue().reversed())
-                .limit(3)
-                .map(Map.Entry::getKey)
-                .forEach(toTake::add);
 
         return toTake.isEmpty() ? null : AIAction.takeGems(toTake);
     }
