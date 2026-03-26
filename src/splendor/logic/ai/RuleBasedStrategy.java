@@ -41,7 +41,7 @@ public class RuleBasedStrategy implements AIStrategy {
         if (takeGems != null) return takeGems;
 
         // --- 5. Fallback: take any available gems --------------------------------
-        return fallbackTakeGems(state);
+        return fallbackTakeGems(state, self);
     }
 
     
@@ -145,7 +145,7 @@ public class RuleBasedStrategy implements AIStrategy {
                 .map(Map.Entry::getKey)
                 .findFirst();
 
-        if (doubleGem.isPresent()) {
+        if (doubleGem.isPresent() && self.getTotalGems() + 2 <= 10) {
             return AIAction.takeGems(List.of(doubleGem.get(), doubleGem.get()));
         }
 
@@ -170,25 +170,35 @@ public class RuleBasedStrategy implements AIStrategy {
                     .forEach(toTake::add);
         }
 
-        return toTake.isEmpty() ? null : AIAction.takeGems(toTake);
+        if (toTake.size() >= 3 && self.getTotalGems() + 3 <= 10) {
+            return AIAction.takeGems(toTake.subList(0, 3));
+        }
+
+        return null;
     }
 
     // Step 5 — fallback gem collection
 
-    private AIAction fallbackTakeGems(GameState state) {
+    private AIAction fallbackTakeGems(GameState state, Player self) {
         GemBank bank = state.getGemBank();
         List<GemColor> available = Arrays.stream(GemColor.values())
                 .filter(c -> c != GemColor.GOLD && bank.getGemCount(c) > 0)
                 .limit(3)
                 .collect(Collectors.toList());
 
-        // Never return fewer gems than available up to 3
-        if (available.isEmpty()) return AIAction.takeGems(List.of());
-        while (available.size() < 3) {
-            // pad with a repeat only if bank allows it — otherwise leave as-is
-            break;
+        if (available.size() >= 3 && self.getTotalGems() + 3 <= 10) {
+            return AIAction.takeGems(available.subList(0, 3));
         }
-        return AIAction.takeGems(available);
+
+        if (self.getTotalGems() + 2 <= 10) {
+            for (GemColor color : GemColor.values()) {
+                if (color != GemColor.GOLD && bank.getGemCount(color) >= 4) {
+                    return AIAction.takeGems(List.of(color, color));
+                }
+            }
+        }
+
+        return null;
     }
 
     // Helpers
