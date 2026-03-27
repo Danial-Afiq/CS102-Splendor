@@ -124,10 +124,7 @@ public class ConsoleGameUI {
                 if (gems.size() == 2 && gems.get(0) == gems.get(1)) {
                     yield engine.takeTwoSameGems(gems.get(0));
                 }
-                if (gems.size() == 3) {
-                    yield engine.takeDifferentGems(gems);
-                }
-                yield false;
+                yield engine.takeDifferentGems(gems);
             }
             case BUY_CARD -> {
                 if (action.buyingReserved()) {
@@ -193,7 +190,7 @@ public class ConsoleGameUI {
     private boolean handleActionChoice(GameEngine engine, int choice) {
         try {
             if (choice == ACTION_TAKE_THREE_DIFFERENT) {
-                return handleTakeThreeDifferentGems(engine);
+                return handleTakeDifferentGems(engine);
             }
             if (choice == ACTION_TAKE_TWO_SAME) {
                 return handleTakeTwoSameGems(engine);
@@ -222,49 +219,44 @@ public class ConsoleGameUI {
         }
     }
 
-    private boolean handleTakeThreeDifferentGems(GameEngine engine) {
-        List<GemColor> firstOptions = getAvailableGemColors(engine, 1, new ArrayList<GemColor>());
-        if (firstOptions.size() < 3) {
-            renderer.printError("You cannot take 3 different gems because fewer than 3 gem colors are available in the bank.");
+    private boolean handleTakeDifferentGems(GameEngine engine) {
+        List<GemColor> availableColors = getAvailableGemColors(engine, 1, new ArrayList<GemColor>());
+        int maxTakeable = Math.min(3, availableColors.size());
+
+        if (maxTakeable == 0) {
+            renderer.printError("You cannot take different gems because no gem colors are available in the bank.");
             return false;
         }
 
-        renderer.printInfo("Pick 3 different gem colors.");
-        GemColor first = readGemColorFromOptionsOrCancel(
-                firstOptions, engine.getGameState(), "First color (0 to go back): ");
-        if (first == null) {
-            return cancelCurrentAction();
-        }
-
-        List<GemColor> secondExcluded = new ArrayList<GemColor>();
-        secondExcluded.add(first);
-        GemColor second = readGemColorFromOptionsOrCancel(
-                getAvailableGemColors(engine, 1, secondExcluded), engine.getGameState(),
-                "Second color (0 to go back): ");
-        if (second == null) {
-            return cancelCurrentAction();
-        }
-
-        List<GemColor> thirdExcluded = new ArrayList<GemColor>();
-        thirdExcluded.add(first);
-        thirdExcluded.add(second);
-        GemColor third = readGemColorFromOptionsOrCancel(
-                getAvailableGemColors(engine, 1, thirdExcluded), engine.getGameState(),
-                "Third color (0 to go back): ");
-        if (third == null) {
-            return cancelCurrentAction();
-        }
+        renderer.printInfo("Pick up to " + maxTakeable + " different gem color" + (maxTakeable != 1 ? "s" : "") + ".");
 
         List<GemColor> selections = new ArrayList<GemColor>();
-        selections.add(first);
-        selections.add(second);
-        selections.add(third);
+        List<GemColor> excluded = new ArrayList<GemColor>();
+        String[] ordinals = {"First", "Second", "Third"};
+
+        for (int i = 0; i < maxTakeable; i++) {
+            List<GemColor> options = getAvailableGemColors(engine, 1, excluded);
+            if (options.isEmpty()) break;
+
+            GemColor picked = readGemColorFromOptionsOrCancel(
+                    options, engine.getGameState(),
+                    ordinals[i] + " color (0 to go back): ");
+            if (picked == null) {
+                return cancelCurrentAction();
+            }
+            selections.add(picked);
+            excluded.add(picked);
+        }
+
+        if (selections.isEmpty()) {
+            return cancelCurrentAction();
+        }
 
         if (!confirmGemSelections(selections)) {
             return cancelCurrentAction();
         }
 
-        boolean success = engine.takeThreeDifferentGems(first, second, third);
+        boolean success = engine.takeDifferentGems(selections);
         if (success) {
             handleHumanDiscardExcessGems(engine);
             lastSuccessMessage = "Took gems: " + renderer.formatGemSelection(selections);
@@ -416,8 +408,11 @@ public class ConsoleGameUI {
 
         renderer.printActionHeader();
 
-        addActionMenuItem(availableActions, ACTION_TAKE_THREE_DIFFERENT, "Take 3 different gems",
-                getTakeThreeDifferentGemsUnavailableReason(engine));
+        int availableColors = getAvailableGemColors(engine, 1, new ArrayList<GemColor>()).size();
+        int gemsTakeable = Math.min(3, availableColors);
+        addActionMenuItem(availableActions, ACTION_TAKE_THREE_DIFFERENT,
+                "Take " + gemsTakeable + " different gem" + (gemsTakeable != 1 ? "s" : ""),
+                getTakeDifferentGemsUnavailableReason(engine));
         addActionMenuItem(availableActions, ACTION_TAKE_TWO_SAME, "Take 2 same gems",
                 getTakeTwoSameGemsUnavailableReason(engine));
         addActionMenuItem(availableActions, ACTION_RESERVE_VISIBLE, "Reserve a visible card",
@@ -553,7 +548,7 @@ public class ConsoleGameUI {
         return getReserveCardUnavailableReason(engine) == null;
     }
 
-    private String getTakeThreeDifferentGemsUnavailableReason(GameEngine engine) {
+    private String getTakeDifferentGemsUnavailableReason(GameEngine engine) {
         if (getAvailableGemColors(engine, 1, new ArrayList<GemColor>()).isEmpty()) {
             return "no gem colors are available in the bank";
         }

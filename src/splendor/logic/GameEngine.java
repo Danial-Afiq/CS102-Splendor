@@ -81,10 +81,27 @@ public class GameEngine {
     }
 
     public boolean takeDifferentGems(List<GemColor> colors) {
-        if (colors == null || colors.size() != 3) {
+        if (colors == null || colors.isEmpty() || colors.size() > 3) {
             return false;
         }
-        return takeThreeDifferentGems(colors.get(0), colors.get(1), colors.get(2));
+
+        // Validate: no gold, no duplicates, all available in bank
+        GemBank bank = gameState.getGemBank();
+        for (int i = 0; i < colors.size(); i++) {
+            GemColor color = colors.get(i);
+            if (color == null || color == GemColor.GOLD) return false;
+            if (!bank.hasAtLeast(color, 1)) return false;
+            for (int j = i + 1; j < colors.size(); j++) {
+                if (color == colors.get(j)) return false;
+            }
+        }
+
+        Player player = getCurrentPlayer();
+        for (GemColor color : colors) {
+            bank.takeGem(color);
+            player.addGem(color, 1);
+        }
+        return true;
     }
 
     public boolean discardGem(GemColor color) {
