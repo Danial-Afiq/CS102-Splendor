@@ -129,7 +129,11 @@ public class GameSetup {
         }
 
         try {
-            return Integer.parseInt(value.trim());
+            int winPoints = Integer.parseInt(value.trim());
+            if (winPoints <= 0) {
+                return DEFAULT_WIN_POINTS;
+            }
+            return winPoints;
         } catch (NumberFormatException e) {
             return DEFAULT_WIN_POINTS;
         }

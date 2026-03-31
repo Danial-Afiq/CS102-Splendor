@@ -68,6 +68,8 @@ public class ConsoleGameUI {
                 renderer.printFinalResults(gameState);
             }
         } catch (IOException e) {
+            renderer.clearScreen();
+            renderer.printSetupBanner();
             renderer.printError("Failed to start game: " + e.getMessage());
         }
     }
