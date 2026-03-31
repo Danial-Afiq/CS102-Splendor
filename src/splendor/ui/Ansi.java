@@ -1,3 +1,4 @@
+// ANSI helper structure was drafted with GPT-5.4, constants were manually instantiated/declared and usage were reviewed and adjusted manually.
 package splendor.ui;
 
 import splendor.entities.GemColor;

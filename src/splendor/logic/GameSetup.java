@@ -1,3 +1,4 @@
+// Setup scaffold drafted with GPT-5.4, team revised the flow and rules to match the project design
 package splendor.logic;
 
 import java.io.FileInputStream;

@@ -1,3 +1,4 @@
+// Initial action-method skeleton drafted with GPT-5.4; logic was reviewed and revised manually.
 package splendor.logic;
 
 import java.util.List;

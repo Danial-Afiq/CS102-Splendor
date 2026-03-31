@@ -1,3 +1,4 @@
+// Initial CLI structure was drafted with GPT-5.4, prompts, flow, and validation were revised manually
 package splendor.ui;
 
 import java.io.IOException;

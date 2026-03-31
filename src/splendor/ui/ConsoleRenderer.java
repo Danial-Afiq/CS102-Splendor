@@ -1,3 +1,5 @@
+// Initial terminal rendering structure was drafted with GPT-5.4. 
+// class fields (constants) were manually written, layout and output were revised & adjusted manually.
 package splendor.ui;
 
 import java.util.ArrayList;
