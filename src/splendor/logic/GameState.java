@@ -12,6 +12,9 @@ import splendor.entities.Noble;
 import splendor.entities.Player;
 import splendor.entities.Tier;
 
+/**
+ * Stores the mutable state of an in-progress Splendor game.
+ */
 public class GameState {
     private final List<Player> players;
     private final GemBank gemBank;
@@ -53,6 +56,9 @@ public class GameState {
         return gemBank;
     }
 
+    /**
+     * Returns a copy of the deck map.
+     */
     public Map<Tier, CardDeck> getDecks() {
         return new HashMap<Tier, CardDeck>(decks);
     }
@@ -89,6 +95,9 @@ public class GameState {
         return gameOver;
     }
 
+    /**
+     * Breaks ties by fewest purchased cards.
+     */
     public List<Player> getWinningPlayers() {
         List<Player> winners = new ArrayList<Player>();
         int bestPoints = -1;
@@ -135,6 +144,9 @@ public class GameState {
         }
     }
 
+    /**
+     * Ends the game after the last turn of the final round.
+     */
     public void advanceTurn() {
         if (gameOver) {
             return;

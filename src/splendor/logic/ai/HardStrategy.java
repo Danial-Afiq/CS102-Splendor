@@ -4,31 +4,17 @@ import java.util.*;
 import splendor.entities.Card;
 import splendor.entities.GemBank;
 import splendor.entities.GemColor;
-
 import splendor.entities.Player;
 import splendor.entities.Tier;
 import splendor.logic.GameState;
 
 /**
- * Hard AI strategy.
- *
- * Decision priority (highest to lowest):
- *
- *  1.  Buy the reserved tier-3 card if affordable.
- *  2.  Buy any other affordable reserved card (e.g. from blocking).
- *  3.  Opportunistic buy — grab any visible card worth 3+ points if affordable.
- *  4.  (2-player only) Block opponent if they have 10+ points and are close to a card.
- *  5.  Reserve a tier-3 card (or tier-2 fallback) if we don't have one.
- *  6.  Buy an affordable engine card whose bonus helps pay for the reserved target.
- *  7.  Buy any affordable visible card (never waste a turn when a purchase exists).
- *  8.  Take gems toward the best engine card we can't yet afford.
- *  9.  Take gems directly toward the reserved high-value card.
- *  10. Reserve a useful visible card whose bonus helps the target.
- *  11. Take whatever gems are available (3 different, 2 same, or fewer).
- *  12. Reserve from top of deck as a last resort for gold.
+ * Advanced AI that favors long-term value and limited opponent blocking.
  */
-
 public class HardStrategy implements AIStrategy {
+    public HardStrategy() {
+    }
+
     @Override
     public AIAction selectAction(GameState state, Player self) {
 
@@ -40,7 +26,7 @@ public class HardStrategy implements AIStrategy {
         AIAction buyReserved = tryBuyAnyReserved(self);
         if (buyReserved != null) return buyReserved;
 
-        // --- 3. Opportunistic buy — grab any visible card with 3+ points we can afford
+        // --- 3. Opportunistic buy - grab any visible card with 3+ points we can afford
         AIAction opportunistic = tryOpportunisticBuy(state, self);
         if (opportunistic != null) return opportunistic;
 
@@ -84,7 +70,7 @@ public class HardStrategy implements AIStrategy {
         return AIAction.takeGems(List.of());
     }
 
-    // Step 1 — buy the reserved tier-3 card if we can afford it
+    // Step 1 - buy the reserved tier-3 card if we can afford it
     private AIAction tryBuyReservedTier3(Player self) {
         List<Card> reserved = self.getReservedCards();
         for (int i = 0; i < reserved.size(); i++) {
@@ -96,7 +82,7 @@ public class HardStrategy implements AIStrategy {
         return null;
     }
 
-    // Step 2 — buy any affordable reserved card (may have been reserved via blocking)
+    // Step 2 - buy any affordable reserved card (may have been reserved via blocking)
     private AIAction tryBuyAnyReserved(Player self) {
         List<Card> reserved = self.getReservedCards();
         Card best = null;
@@ -117,7 +103,7 @@ public class HardStrategy implements AIStrategy {
         return best != null ? AIAction.buyReserved(bestIndex) : null;
     }
 
-    // Step 3 — opportunistic buy: grab any visible card with 3+ points we can afford
+    // Step 3 - opportunistic buy: grab any visible card with 3+ points we can afford
     private AIAction tryOpportunisticBuy(GameState state, Player self) {
         Card best = null;
         Tier bestTier = null;
@@ -142,7 +128,7 @@ public class HardStrategy implements AIStrategy {
         return best != null ? AIAction.buyVisible(bestTier, bestSlot) : null;
     }
 
-    // Step 4 — (2-player only) block opponent by reserving a card they're close to buying
+    // Step 4 - (2-player only) block opponent by reserving a card they're close to buying
     private AIAction tryBlockOpponent(GameState state, Player self) {
         // Only activate in 2-player games
         if (state.getPlayers().size() != 2) return null;
@@ -196,7 +182,7 @@ public class HardStrategy implements AIStrategy {
         return bestBlock != null ? AIAction.reserveVisible(bestTier, bestSlot) : null;
     }
 
-    // Step 5 — reserve a tier-3 card (or high-point tier-2 if no tier-3 available)
+    // Step 5 - reserve a tier-3 card (or high-point tier-2 if no tier-3 available)
     private AIAction tryReserveHighValue(GameState state, Player self) {
         if (self.getReservedCards().size() >= 3) return null;
 
@@ -243,7 +229,7 @@ public class HardStrategy implements AIStrategy {
         return best != null ? AIAction.reserveVisible(bestTier, bestSlot) : null;
     }
 
-    // Step 6 — buy an affordable engine card (bonus helps the reserved target)
+    // Step 6 - buy an affordable engine card (bonus helps the reserved target)
     private AIAction tryBuyEngineCard(GameState state, Player self) {
         Card target = findReservedHighValue(self);
         if (target == null) return null;
@@ -280,7 +266,7 @@ public class HardStrategy implements AIStrategy {
         return bestCard != null ? AIAction.buyVisible(bestTier, bestSlot) : null;
     }
 
-    // Step 7 — buy any affordable visible card (don't waste a turn when a buy is possible)
+    // Step 7 - buy any affordable visible card (don't waste a turn when a buy is possible)
     private AIAction tryBuyAnyVisible(GameState state, Player self) {
         Card best = null;
         Tier bestTier = null;
@@ -319,7 +305,7 @@ public class HardStrategy implements AIStrategy {
         return best != null ? AIAction.buyVisible(bestTier, bestSlot) : null;
     }
 
-    // Step 8 — take gems toward the best engine card we can't yet afford
+    // Step 8 - take gems toward the best engine card we can't yet afford
     private AIAction tryTakeGemsForEngine(GameState state, Player self) {
         Card target = findReservedHighValue(self);
         if (target == null) return null;
@@ -354,7 +340,7 @@ public class HardStrategy implements AIStrategy {
         return bestCard != null ? takeGemsToward(bestCard, state, self) : null;
     }
 
-    // Step 9 — take gems directly toward the reserved high-value card
+    // Step 9 - take gems directly toward the reserved high-value card
     private AIAction tryTakeGemsTowardTarget(GameState state, Player self) {
         Card target = findReservedHighValue(self);
         if (target == null) return null;
@@ -362,7 +348,7 @@ public class HardStrategy implements AIStrategy {
         return takeGemsToward(target, state, self);
     }
 
-    // Step 10 — reserve a useful visible card whose bonus helps the target
+    // Step 10 - reserve a useful visible card whose bonus helps the target
     private AIAction tryReserveUsefulCard(GameState state, Player self) {
         if (self.getReservedCards().size() >= 3) return null;
 
@@ -402,7 +388,7 @@ public class HardStrategy implements AIStrategy {
         return bestCard != null ? AIAction.reserveVisible(bestTier, bestSlot) : null;
     }
 
-    // Step 11 — take whatever gems are available
+    // Step 11 - take whatever gems are available
     private AIAction takeAvailableGems(GameState state) {
         GemBank bank = state.getGemBank();
 
@@ -430,7 +416,7 @@ public class HardStrategy implements AIStrategy {
         return null;
     }
 
-    // Step 12 — reserve from top of deck as last resort for gold
+    // Step 12 - reserve from top of deck as last resort for gold
     private AIAction tryReserveTopOfDeck(GameState state, Player self) {
         if (self.getReservedCards().size() >= 3) return null;
 
@@ -441,7 +427,6 @@ public class HardStrategy implements AIStrategy {
         }
         return null;
     }
-
 
     @Override
     public GemColor chooseGemToDiscard(GameState state, Player self) {
@@ -467,7 +452,7 @@ public class HardStrategy implements AIStrategy {
 
         if (bestExcess != null) return bestExcess;
 
-        // All gems contribute — pick any non-gold gem
+        // All gems contribute - pick any non-gold gem
         List<GemColor> held = new ArrayList<>();
         for (GemColor color : GemColor.values()) {
             if (color == GemColor.GOLD) continue;
@@ -484,10 +469,6 @@ public class HardStrategy implements AIStrategy {
     }
     
     // Helpers
-
-    /**
-     * Find the highest-value reserved card (tier-3 first, then tier-2).
-     */
     private Card findReservedHighValue(Player self) {
         Card best = null;
         for (Card card : self.getReservedCards()) {
@@ -500,10 +481,6 @@ public class HardStrategy implements AIStrategy {
         }
         return best;
     }
-
-    /**
-     * Take gems toward a target card (prefer 2-same over 3-different).
-     */
     private AIAction takeGemsToward(Card target, GameState state, Player self) {
         Map<GemColor, Integer> shortage = computeShortage(self, target);
         if (shortage.isEmpty()) return null;
@@ -547,11 +524,6 @@ public class HardStrategy implements AIStrategy {
 
         return toTake.isEmpty() ? null : AIAction.takeGems(toTake);
     }
-
-    /**
-     * Can the player afford a card, accounting for bonuses and gold as wild?
-     * Mirrors GameEngine.canAfford exactly.
-     */
     private boolean canAfford(Player player, Card card) {
         int goldNeeded = 0;
         for (GemColor color : GemColor.values()) {
@@ -566,11 +538,6 @@ public class HardStrategy implements AIStrategy {
         }
         return player.getGemCount(GemColor.GOLD) >= goldNeeded;
     }
-
-    /**
-     * Returns the number of additional gems of each colour needed
-     * to buy the card (after applying bonuses), clamped to > 0.
-     */
     private Map<GemColor, Integer> computeShortage(Player player, Card card) {
         Map<GemColor, Integer> shortage = new EnumMap<>(GemColor.class);
         for (GemColor color : GemColor.values()) {
@@ -583,10 +550,6 @@ public class HardStrategy implements AIStrategy {
         }
         return shortage;
     }
-
-    /**
-     * Count how many distinct non-zero gem colors a card costs
-     */
     private int countGemTypes(Card card) {
         int count = 0;
         for (GemColor color : GemColor.values()) {

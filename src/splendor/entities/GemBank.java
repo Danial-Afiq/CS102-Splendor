@@ -2,9 +2,17 @@ package splendor.entities;
 
 import java.util.EnumMap;
 
+/**
+ * Tracks the shared supply of gem tokens.
+ */
 public class GemBank {
     private final EnumMap<GemColor, Integer> gems;
 
+    /**
+     * Creates a bank with Splendor's token counts for 2 to 4 players.
+     *
+     * @throws IllegalArgumentException if {@code numPlayers} is not 2, 3, or 4
+     */
     public GemBank(int numPlayers) {
         this.gems = new EnumMap<>(GemColor.class);
 

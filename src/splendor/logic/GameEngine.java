@@ -8,9 +8,17 @@ import splendor.entities.Noble;
 import splendor.entities.Player;
 import splendor.entities.Tier;
 
+/**
+ * Applies Splendor rules to a {@link GameState}.
+ */
 public class GameEngine {
     private final GameState gameState;
 
+    /**
+     * Creates an engine for the supplied game state.
+     *
+     * @throws IllegalArgumentException if {@code gameState} is {@code null}
+     */
     public GameEngine(GameState gameState) {
         if (gameState == null) {
             throw new IllegalArgumentException("gameState cannot be null");
@@ -26,7 +34,6 @@ public class GameEngine {
         return gameState.getCurrentPlayer();
     }
 
-    // can current player afford this visible card?
     public boolean canAffordCurrentPlayer(Card card) {
         if (card == null) {
             throw new IllegalArgumentException("card cannot be null");
@@ -80,6 +87,9 @@ public class GameEngine {
         return true;
     }
 
+    /**
+     * Takes one to three distinct non-gold colors.
+     */
     public boolean takeDifferentGems(List<GemColor> colors) {
         if (colors == null || colors.isEmpty() || colors.size() > 3) {
             return false;
@@ -117,6 +127,9 @@ public class GameEngine {
         return true;
     }
 
+    /**
+     * Reserves a visible card and also awards a gold token if available.
+     */
     public boolean reserveVisibleCard(Tier tier, int slotIndex) {
         if (tier == null) {
             throw new IllegalArgumentException("Tier cannot be null");
@@ -146,6 +159,9 @@ public class GameEngine {
         return true;
     }
 
+    /**
+     * Reserves the top card of a deck and also awards a gold token if available.
+     */
     public boolean reserveTopCard(Tier tier) {
         if (tier == null) {
             throw new IllegalArgumentException("Tier cannot be null");
@@ -214,6 +230,9 @@ public class GameEngine {
         return true;
     }
 
+    /**
+     * Claims the first eligible noble in play.
+     */
     public boolean claimEligibleNobles() {
         Player player = getCurrentPlayer();
         List<Noble> nobles = gameState.getNoblesInPlay();

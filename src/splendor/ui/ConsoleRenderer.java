@@ -9,7 +9,9 @@ import splendor.entities.Player;
 import splendor.entities.Tier;
 import splendor.logic.GameState;
 
-// this class has methods to help format the output for aesthetics
+/**
+ * Renders the console presentation of the game.
+ */
 public class ConsoleRenderer {
     private static final String TOP_LEFT_CORNER = "\u250C";
     private static final String TOP_RIGHT_CORNER = "\u2510";
@@ -39,6 +41,9 @@ public class ConsoleRenderer {
     private static final int SUMMARY_CARD_HEIGHT = 5;
     private static final int NOBLE_INNER_WIDTH = 20;
     private static final int NOBLE_HEIGHT = 6;
+
+    public ConsoleRenderer() {
+    }
 
     public void clearScreen() {
         System.out.print(Ansi.CLEAR_SCREEN + Ansi.CURSOR_HOME);
@@ -193,6 +198,9 @@ public class ConsoleRenderer {
 
         return joinStrings(tokens, "   ");
     }
+
+
+// ----- PRIVATE HELPER METHODS ---------------------------------------------------
 
     private void printMetaLine(GameState gameState) {
         String line = "Current Player: " + gameState.getCurrentPlayer().getName()

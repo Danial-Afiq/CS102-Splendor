@@ -17,18 +17,12 @@ import splendor.entities.Tier;
 import splendor.logic.GameState;
 
 /**
- * Medium AI strategy.
- *
- * Decision priority (highest to lowest):
- *  1. Buy a reserved card if affordable.
- *  2. Buy a visible card — prefer highest points, break ties by cheapest cost.
- *  3. Reserve a tier-2 or tier-3 card if hand has room and a good target exists.
- *  4. Take gems that make the most progress toward the cheapest reachable card.
- *  5. Take whatever gems are available (3 different, 2 same, or fewer).
- *  6. Reserve from top of deck if hand has room.
+ * AI strategy that balances card value with short-term progress.
  */
-
 public class MediumStrategy implements AIStrategy {
+
+    public MediumStrategy() {
+    }
 
     @Override
     public AIAction selectAction(GameState state, Player self) {
@@ -186,7 +180,7 @@ public class MediumStrategy implements AIStrategy {
         return null;
     }
 
-    // Step 5 — take whatever gems are available
+    // Step 5 - take whatever gems are available
 
     private AIAction takeAvailableGems(GameState state) {
         GemBank bank = state.getGemBank();
@@ -217,7 +211,7 @@ public class MediumStrategy implements AIStrategy {
         return null;
     }
 
-    // Step 6 — reserve from top of deck as a last resort to get gold
+    // Step 6 - reserve from top of deck as a last resort to get gold
     private AIAction tryReserveTopOfDeck(GameState state, Player self) {
         if (self.getReservedCards().size() >= 3) return null;
 

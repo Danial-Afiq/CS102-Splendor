@@ -11,18 +11,17 @@ import splendor.entities.Tier;
 import splendor.logic.GameState;
 
 /**
- * Easy AI strategy.
- *
- * Decision priority (highest to lowest):
- *  1. Buy the first affordable visible card found (no scoring).
- *  2. Buy the first affordable reserved card found (no scoring).
- *  3. Take 3 different gems from whatever is available (no targeting).
- *  4. Take 2 same gems if possible (no targeting).
- *  5. Reserve a card at random.
+ * 
+ * Baseline AI that follows simple first-valid heuristics.
  */
 public class EasyStrategy implements AIStrategy {
 
     private final Random random = new Random();
+    /**
+     * Creates the easy-difficulty AI strategy.
+     */
+    public EasyStrategy() {
+    }
 
     @Override
     public AIAction selectAction(GameState state, Player self) {
@@ -50,7 +49,7 @@ public class EasyStrategy implements AIStrategy {
         return AIAction.takeGems(List.of());
     }
 
-    // Step 1 — buy the first affordable visible card, no preference
+    // Step 1 - buy the first affordable visible card, no preference
     private AIAction tryBuyVisible(GameState state, Player self) {
         for (Tier tier : Tier.values()) {
             List<Card> visible = state.getVisibleCards(tier);
@@ -65,7 +64,7 @@ public class EasyStrategy implements AIStrategy {
         return null;
     }
 
-    // Step 2 — buy the first affordable reserved card, no preference
+    // Step 2 - buy the first affordable reserved card, no preference
     private AIAction tryBuyReserved(Player self) {
         List<Card> reserved = self.getReservedCards();
         for (int i = 0; i < reserved.size(); i++) {
@@ -76,7 +75,7 @@ public class EasyStrategy implements AIStrategy {
         return null;
     }
 
-    // Step 3 — take up to 3 different gems from whatever is available in the bank
+    // Step 3 - take up to 3 different gems from whatever is available in the bank
     private AIAction tryTakeThreeGems(GameState state) {
         GemBank bank = state.getGemBank();
         List<GemColor> toTake = new ArrayList<>();
@@ -91,7 +90,7 @@ public class EasyStrategy implements AIStrategy {
         return toTake.size() >= 3 ? AIAction.takeGems(toTake) : null;
     }
 
-    // Step 4 — take 2 of the same gem if any color has at least 4 in the bank
+    // Step 4 - take 2 of the same gem if any color has at least 4 in the bank
     private AIAction tryTakeTwoSameGems(GameState state) {
         GemBank bank = state.getGemBank();
         for (GemColor color : GemColor.values()) {
@@ -102,7 +101,7 @@ public class EasyStrategy implements AIStrategy {
         return null;
     }
 
-    // Step 5 — reserve a random visible card if hand has room
+    // Step 5 - reserve a random visible card if hand has room
     private AIAction tryReserveRandom(GameState state, Player self) {
         if (self.getReservedCards().size() >= 3) return null;
 
@@ -120,7 +119,7 @@ public class EasyStrategy implements AIStrategy {
         return AIAction.reserveVisible(tier, slot);
     }
 
-    // Discard logic — pick a random gem from the player's hand
+    // Discard logic - pick a random gem from the player's hand
 
     @Override
     public GemColor chooseGemToDiscard(GameState state, Player self) {
@@ -134,11 +133,6 @@ public class EasyStrategy implements AIStrategy {
     }
 
     // Helpers
-
-    /**
-     * Can the player afford a card, accounting for bonuses from purchased cards?
-     * Gold gems act as wild cards for any shortfall.
-     */
     private boolean canAfford(Player player, Card card) {
         int goldNeeded = 0;
         for (GemColor color : GemColor.values()) {

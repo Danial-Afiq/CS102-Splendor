@@ -9,8 +9,16 @@ import java.util.List;
 import splendor.entities.GemColor;
 import splendor.entities.Noble;
 
+/**
+ * Loads nobles from CSV data.
+ */
 public class NobleLoader {
+    public NobleLoader() {
+    }
 
+    /**
+     * Loads nobles from a CSV file.
+     */
     public static List<Noble> loadNobles(String filePath) throws IOException {
         List<Noble> nobles = new ArrayList<Noble>();
 

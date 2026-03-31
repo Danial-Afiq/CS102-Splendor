@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
+/**
+ * Represents a player and their cards, nobles, and gem tokens.
+ */
 public class Player {
     private final String name;
     private final EnumMap<GemColor, Integer> gems;

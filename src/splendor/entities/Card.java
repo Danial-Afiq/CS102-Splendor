@@ -2,6 +2,9 @@ package splendor.entities;
 
 import java.util.EnumMap;
 
+/**
+ * Represents a development card.
+ */
 public class Card {
     private final Tier tier;
     private final int points;

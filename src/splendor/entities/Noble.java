@@ -2,21 +2,28 @@ package splendor.entities;
 
 import java.util.EnumMap;
 
+/**
+ * Represents a noble tile.
+ */
 public class Noble {
     private final String id;
     private final int points;
     private final EnumMap<GemColor, Integer> requirements;
+
     public Noble(String id, int points, EnumMap<GemColor, Integer> requirements) {
         this.id = id;
         this.points = points;
         this.requirements = requirements;
     }
+
     public String getId() {
         return id;
     }
+
     public int getPoints() {
         return points;
     }
+
     public EnumMap<GemColor, Integer> getRequirements() {
         return requirements;
     }

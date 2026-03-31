@@ -18,6 +18,9 @@ import splendor.logic.GameState;
 import splendor.logic.ai.AIAction;
 import splendor.logic.ai.AIDifficulty;
 
+/**
+ * Runs the interactive console UI for Splendor.
+ */
 public class ConsoleGameUI {
     private static final int ACTION_TAKE_THREE_DIFFERENT = 1;
     private static final int ACTION_TAKE_TWO_SAME = 2;

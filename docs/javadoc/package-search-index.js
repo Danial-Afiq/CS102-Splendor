@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html","k":"18"},{"l":"splendor.app"},{"l":"splendor.data"},{"l":"splendor.entities"},{"l":"splendor.logic"},{"l":"splendor.logic.ai"},{"l":"splendor.ui"}];updateSearchResults();

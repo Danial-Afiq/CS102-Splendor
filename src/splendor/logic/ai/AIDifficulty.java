@@ -1,5 +1,8 @@
 package splendor.logic.ai;
 
+/**
+ * Enumerates the available AI difficulty presets for computer-controlled players.
+ */
 public enum AIDifficulty {
     EASY,
     MEDIUM,

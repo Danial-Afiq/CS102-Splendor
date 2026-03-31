@@ -2,6 +2,9 @@ package splendor.ui;
 
 import splendor.entities.GemColor;
 
+/**
+ * Utility class for wrapping console text with ANSI escape codes when supported.
+ */
 public final class Ansi {
     public static final boolean ENABLED = System.getenv("NO_COLOR") == null;
 

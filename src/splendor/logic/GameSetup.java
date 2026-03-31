@@ -22,11 +22,20 @@ import splendor.entities.Player;
 import splendor.entities.Tier;
 import splendor.logic.ai.AIDifficulty;
 
+/**
+ * Builds a new {@link GameState} from player and configuration data.
+ */
 public class GameSetup {
     private static final int DEFAULT_WIN_POINTS = 15;
     private static final String DEFAULT_CARD_FILE_PATH = "src/splendor/data/cards.csv";
     private static final String DEFAULT_NOBLE_FILE_PATH = "src/splendor/data/nobles.csv";
 
+    public GameSetup() {
+    }
+
+    /**
+     * Uses medium difficulty for the named AI players.
+     */
     public static GameState createGame(List<String> playerNames, Set<String> aiPlayerNames,
             String configFilePath) throws IOException {
         Map<String, AIDifficulty> aiDifficulties = new HashMap<String, AIDifficulty>();
@@ -36,6 +45,9 @@ public class GameSetup {
         return createGame(playerNames, aiDifficulties, configFilePath);
     }
 
+    /**
+     * Uses card, noble, and win settings from the config file.
+     */
     public static GameState createGame(List<String> playerNames, Map<String, AIDifficulty> aiDifficulties,
             String configFilePath) throws IOException {
         Properties properties = loadProperties(configFilePath);
@@ -45,6 +57,9 @@ public class GameSetup {
         return createGame(playerNames, aiDifficulties, cardFilePath, nobleFilePath, winPoints);
     }
 
+    /**
+     * Uses explicit card and noble files with win settings from the config file.
+     */
     public static GameState createGame(List<String> playerNames, Map<String, AIDifficulty> aiDifficulties,
             String cardFilePath, String nobleFilePath, String configFilePath) throws IOException {
         Properties properties = loadProperties(configFilePath);
