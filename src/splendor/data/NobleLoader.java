@@ -14,9 +14,6 @@ import splendor.entities.Noble;
  * Loads nobles from CSV data.
  */
 public class NobleLoader {
-    public NobleLoader() {
-    }
-
     /**
      * Loads nobles from a CSV file.
      */

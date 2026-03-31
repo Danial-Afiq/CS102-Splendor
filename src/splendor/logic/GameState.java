@@ -2,7 +2,6 @@ package splendor.logic;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import splendor.entities.Card;
@@ -56,13 +55,6 @@ public class GameState {
         return gemBank;
     }
 
-    /**
-     * Returns a copy of the deck map.
-     */
-    public Map<Tier, CardDeck> getDecks() {
-        return new HashMap<Tier, CardDeck>(decks);
-    }
-
     public CardDeck getDeck(Tier tier) {
         return decks.get(tier);
     }
@@ -77,10 +69,6 @@ public class GameState {
 
     public int getWinPoints() {
         return winPoints;
-    }
-
-    public int getCurrentPlayerIndex() {
-        return currentPlayerIndex;
     }
 
     public Player getCurrentPlayer() {

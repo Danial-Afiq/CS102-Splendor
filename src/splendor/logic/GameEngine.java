@@ -42,32 +42,6 @@ public class GameEngine {
         return canAfford(getCurrentPlayer(), card);
     }
 
-    public boolean takeThreeDifferentGems(GemColor first, GemColor second, GemColor third) {
-        if (first == null || second == null || third == null) {
-            throw new IllegalArgumentException("Gem colors cannot be null");
-        }
-        if (first == GemColor.GOLD || second == GemColor.GOLD || third == GemColor.GOLD) {
-            return false;
-        }
-        if (first == second || first == third || second == third) {
-            return false;
-        }
-
-        GemBank bank = gameState.getGemBank();
-        if (!bank.hasAtLeast(first, 1) || !bank.hasAtLeast(second, 1) || !bank.hasAtLeast(third, 1)) {
-            return false;
-        }
-
-        Player player = getCurrentPlayer();
-        bank.takeGem(first);
-        bank.takeGem(second);
-        bank.takeGem(third);
-        player.addGem(first, 1);
-        player.addGem(second, 1);
-        player.addGem(third, 1);
-        return true;
-    }
-
     public boolean takeTwoSameGems(GemColor color) {
         if (color == null) {
             throw new IllegalArgumentException("Gem color cannot be null");

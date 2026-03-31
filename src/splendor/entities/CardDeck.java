@@ -45,16 +45,6 @@ public class CardDeck {
         return cards.remove(0); 
     } 
 
-    /**
-     * Peeks at the top card, or returns {@code null} when empty.
-     */
-    public Card peekTopCard() {
-        if (cards.isEmpty()) {
-            return null;
-        }
-        return cards.get(0);
-    }
-
     @Override 
     public String toString() {
         return "CardDeck{" + "tier=" + tier + ", size=" + cards.size() + "}"; 

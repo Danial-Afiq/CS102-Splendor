@@ -18,9 +18,6 @@ import splendor.entities.Tier;
  * Loads development cards from CSV data.
  */
 public class CardLoader {
-    public CardLoader() {
-    }
-
     /**
      * Loads one deck per tier from a CSV file.
      */

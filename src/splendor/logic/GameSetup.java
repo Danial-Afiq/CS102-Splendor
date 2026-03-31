@@ -31,9 +31,6 @@ public class GameSetup {
     private static final String DEFAULT_CARD_FILE_PATH = "src/splendor/data/cards.csv";
     private static final String DEFAULT_NOBLE_FILE_PATH = "src/splendor/data/nobles.csv";
 
-    public GameSetup() {
-    }
-
     /**
      * Uses medium difficulty for the named AI players.
      */
