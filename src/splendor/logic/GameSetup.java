@@ -30,6 +30,9 @@ public class GameSetup {
     private static final int DEFAULT_WIN_POINTS = 15;
     private static final String DEFAULT_CARD_FILE_PATH = "src/splendor/data/cards.csv";
     private static final String DEFAULT_NOBLE_FILE_PATH = "src/splendor/data/nobles.csv";
+    private static final String TWO_PLAYER_GEM_COUNT_KEY = "gembank.standard.count.2p";
+    private static final String THREE_PLAYER_GEM_COUNT_KEY = "gembank.standard.count.3p";
+    private static final String FOUR_PLAYER_GEM_COUNT_KEY = "gembank.standard.count.4p";
 
     /**
      * Uses medium difficulty for the named AI players.
@@ -52,7 +55,8 @@ public class GameSetup {
         String cardFilePath = getFilePath(properties, "cards.filepath", DEFAULT_CARD_FILE_PATH);
         String nobleFilePath = getFilePath(properties, "nobles.filepath", DEFAULT_NOBLE_FILE_PATH);
         int winPoints = getWinPoints(properties);
-        return createGame(playerNames, aiDifficulties, cardFilePath, nobleFilePath, winPoints);
+        int standardGemCount = getStandardGemCount(properties, playerNames.size());
+        return createGame(playerNames, aiDifficulties, cardFilePath, nobleFilePath, winPoints, standardGemCount);
     }
 
     /**
@@ -62,11 +66,12 @@ public class GameSetup {
             String cardFilePath, String nobleFilePath, String configFilePath) throws IOException {
         Properties properties = loadProperties(configFilePath);
         int winPoints = getWinPoints(properties);
-        return createGame(playerNames, aiDifficulties, cardFilePath, nobleFilePath, winPoints);
+        int standardGemCount = getStandardGemCount(properties, playerNames.size());
+        return createGame(playerNames, aiDifficulties, cardFilePath, nobleFilePath, winPoints, standardGemCount);
     }
 
     private static GameState createGame(List<String> playerNames, Map<String, AIDifficulty> aiDifficulties,
-            String cardFilePath, String nobleFilePath, int winPoints) throws IOException {
+            String cardFilePath, String nobleFilePath, int winPoints, int standardGemCount) throws IOException {
         List<Player> players = new ArrayList<Player>();
 
         for (String name : playerNames) {
@@ -77,7 +82,7 @@ public class GameSetup {
             }
         }
 
-        GemBank gemBank = new GemBank(playerNames.size());
+        GemBank gemBank = new GemBank(playerNames.size(), standardGemCount);
         Map<Tier, CardDeck> decks = CardLoader.loadDecks(cardFilePath);
         for (CardDeck deck : decks.values()) {
             deck.shuffle();
@@ -137,5 +142,37 @@ public class GameSetup {
         } catch (NumberFormatException e) {
             return DEFAULT_WIN_POINTS;
         }
+    }
+
+    private static int getStandardGemCount(Properties properties, int numPlayers) {
+        String key = getGemCountKey(numPlayers);
+        int defaultGemCount = GemBank.getDefaultStandardGemCount(numPlayers);
+        String value = properties.getProperty(key);
+        if (value == null || value.trim().isEmpty()) {
+            return defaultGemCount;
+        }
+
+        try {
+            int gemCount = Integer.parseInt(value.trim());
+            if (gemCount <= 0) {
+                return defaultGemCount;
+            }
+            return gemCount;
+        } catch (NumberFormatException e) {
+            return defaultGemCount;
+        }
+    }
+
+    private static String getGemCountKey(int numPlayers) {
+        if (numPlayers == 2) {
+            return TWO_PLAYER_GEM_COUNT_KEY;
+        }
+        if (numPlayers == 3) {
+            return THREE_PLAYER_GEM_COUNT_KEY;
+        }
+        if (numPlayers == 4) {
+            return FOUR_PLAYER_GEM_COUNT_KEY;
+        }
+        throw new IllegalArgumentException("Number of players must be 2, 3, or 4.");
     }
 }
