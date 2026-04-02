@@ -26,21 +26,25 @@ public class MediumStrategy implements AIStrategy {
 
     @Override
     public AIAction selectAction(GameState state, Player self) {
+        // --- 1. Buy the best affordable reserved card (scored by points + bonus) -----
         AIAction buyReserved = tryBuyReserved(state, self);
         if (buyReserved != null) {
             return buyReserved;
         }
 
+        // --- 2. Buy the best affordable visible card (scored by points + bonus) ------
         AIAction buyVisible = tryBuyVisible(state, self);
         if (buyVisible != null) {
             return buyVisible;
         }
 
+        // --- 3. Reserve the highest-scored tier-2 or tier-3 card we can't yet afford -
         AIAction reserve = tryReserve(state, self);
         if (reserve != null) {
             return reserve;
         }
 
+        // --- 4. Take gems toward the visible card with the smallest gem shortage -----
         AIAction takeGems = tryTakeGemsTowardTarget(state, self);
         if (takeGems != null) {
             return takeGems;
@@ -57,6 +61,7 @@ public class MediumStrategy implements AIStrategy {
         return AIAction.takeGems(List.of());
     }
 
+    // Step 1 - buy the highest-scored affordable reserved card
     private AIAction tryBuyReserved(GameState state, Player self) {
         List<Card> reserved = self.getReservedCards();
         Card best = null;
@@ -77,6 +82,7 @@ public class MediumStrategy implements AIStrategy {
         return best != null ? AIAction.buyReserved(bestIndex) : null;
     }
 
+    // Step 2 - buy the highest-scored affordable visible card across all tiers
     private AIAction tryBuyVisible(GameState state, Player self) {
         Card best = null;
         Tier bestTier = null;
@@ -104,6 +110,7 @@ public class MediumStrategy implements AIStrategy {
         return best != null ? AIAction.buyVisible(bestTier, bestSlot) : null;
     }
 
+    // Step 3 - reserve the highest-scored tier-2 or tier-3 card we can't yet afford (2+ points required)
     private AIAction tryReserve(GameState state, Player self) {
         if (self.getReservedCards().size() >= 3) {
             return null;
@@ -135,6 +142,7 @@ public class MediumStrategy implements AIStrategy {
         return best != null ? AIAction.reserveVisible(bestTier, bestSlot) : null;
     }
 
+    // Step 4 - take gems toward the visible card with the smallest gem shortage
     private AIAction tryTakeGemsTowardTarget(GameState state, Player self) {
         Card target = findBestTarget(state, self);
         if (target == null) {
@@ -181,7 +189,6 @@ public class MediumStrategy implements AIStrategy {
     }
 
     // Step 5 - take whatever gems are available
-
     private AIAction takeAvailableGems(GameState state) {
         GemBank bank = state.getGemBank();
 
